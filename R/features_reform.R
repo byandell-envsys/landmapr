@@ -11,6 +11,11 @@
 
 features_reform <- function(features) {
   if(!length(features)) return(NULL)
+  # Check if features is an error; probably wrong API key.
+  is_error <- names(features)
+  if(!is.null(is_error) && is_error == "error") {
+    stop(features)
+  }
   
   out <- tibble::as_tibble(
     lapply(purrr::transpose(

@@ -1,6 +1,6 @@
 Package: landmapr
-Version: 0.5.10
-Date: 2024-11-27
+Version: 0.5.11
+Date: 2025-11-28
 Title: Maps of land boundaries
 Description: Tools to study native land data
 Authors@R: c(person("Brian S Yandell",
@@ -9,8 +9,8 @@ Authors@R: c(person("Brian S Yandell",
 Depends:
     R (>= 4.2.0)
 Imports:
-    dplyr, DT, ggrepel, ggspatial, ggplot2, httr, purrr, rjson, rlang, sf,
-    shiny, stringr, tibble, tidycensus, tidyr, tmap
+    dplyr, DT, ggrepel, ggspatial, ggplot2, httr, prettymapr, purrr, rjson,
+    rlang, sf, shiny, stringr, tibble, tidycensus, tidyr, tmap
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3

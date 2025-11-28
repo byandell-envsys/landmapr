@@ -16,22 +16,25 @@ has been used to set up files.
 In there, the
 [native-land.ca API key](https://native-land.ca/resources/api-docs/)
 is stored.
-Below, calls to `readRDS("data/*.rds)` bring up saved files.
+Below, calls to `readRDS(file.path(datadir, "*.rds))` bring up saved files.
 
 The new Fort Laramie geojson files come from
 
 - <https://sicangudata.org/repository/a/1851_treaty_bounds>
 - <https://sicangudata.org/repository/a/1868_treaty_bounds>
 
+```{r}
+datadir <- "../data"
+```
 
 ```{r}
-nativeLandKey <- readRDS("data/nativeLandKey.rds")
+nativeLandKey <- readRDS(file.path(datadir, "nativeLandKey.rds"))
 ```
 
 ## Fort Laramie Treaties from `native-land.ca`
 
 ```{r}
-nativeLandUS <- readRDS("data/nativeLandUS.rds")
+nativeLandUS <- readRDS(file.path(datadir, "nativeLandUS.rds"))
 ```
 
 ```{r}
@@ -50,9 +53,9 @@ landmapr::ggplot_sf(color = laramieNL$color) +
 
 ```{r warning=FALSE}
 laramieRamadda <- dplyr::bind_rows(
-  "1851" = sf::st_read("data/1851_treaty_bounds.geojson") |>
+  "1851" = sf::st_read(file.path(datadir, "1851_treaty_bounds.geojson")) |>
     dplyr::mutate(color = "darkgreen"),
-  "1868" = sf::st_read("data/1868_treaty_boundaries.geojson") |>
+  "1868" = sf::st_read(file.path(datadir, "1868_treaty_boundaries.geojson")) |>
     dplyr::mutate(color = "darkblue"),
   .id = "Name") |>
   dplyr::select(-name) |>
@@ -69,6 +72,75 @@ landmapr::ggplot_sf(color = c(laramieNL$color, laramieRamadda$color)) +
   landmapr::ggplot_layer_name(laramieNL) +
   landmapr::ggplot_layer_name(laramieRamadda) +
   ggplot2::ggtitle("native-land.ca Fort Laramie 1851 & 1868")
+```
+
+Pull map directly from
+[sicangudata.org](https://sicangudata.org)
+at
+<https://sicangudata.org/repository/a/1851_treaty_bounds>.
+
+To scrape URLs from a web page using R, follow these steps:
+
+- Install and load the necessary packages: `rvest` and `httr`.
+- Use `rvest::read_html()` to read the web page content.
+- Use `rvest::html_elements()` to select the anchor tags (`<a>`).
+- Extract the URLs using `rvest::html_attr()` with the attribute `"href"`.
+- Clean the URLs to remove any unwanted characters or fragments.
+- Store the URLs in a vector or data frame for further analysis.
+
+```{r}
+sicangudata <- "https://sicangudata.org/repository/entry/get"
+geojson_1851 <- "1851_treaty_bounds.geojson"
+extra_1851 <- "?entryid=6e6a35ed-12e4-449b-a00b-e1f5e6dfd5c3"
+url_1851 <- paste0(file.path(sicangudata, geojson_1851), extra_1851)
+```
+
+```{r}
+rvest::read_html("https://www.geeksforgeeks.org//data-structures-in-r-programming") |>
+  rvest::html_elements("p") |>
+  rvest::html_text() |>
+  print()
+```
+
+The following will not work because one cannot operate on pages in
+[sicangudata.org](https://sicangudata.org), specifically on
+<https://sicangudata.org/repository/a/1851_treaty_bounds>
+because external activity is blocked
+
+```{r eval=FALSE}
+sic_1851 <- rvest::read_html("~/Downloads/1851 Treaty Bounds.html") |>
+  rvest::html_elements("link") |>
+  rvest::html_attr("href") |>
+  rvest::html_text() |>
+  print()
+```
+
+But one can use the specific URL (with `entryID`) to get the contents.
+This requires knowing that ID, which means manually visiting the page
+or having a lookup table.
+
+```{r}
+ramadda_1851 <- sf::st_read(url_1851) |>
+    dplyr::mutate(color = "blue", Name = "1851") |>
+  sf::st_make_valid()
+```
+
+```{r eval=FALSE, warning = FALSE, message = FALSE}
+landmapr::ggplot_sf(color = c(laramieNL$color, laramieRamadda$color)) + 
+  ggspatial::annotation_map_tile(type = "osm", zoomin = -1) +
+  landmapr::ggplot_layer_sf(ramadda_1851) +
+  landmapr::ggplot_layer_name(ramadda_1851) +
+  ggplot2::ggtitle("Ramadda Fort Laramie 1851")
+```
+
+```{r eval=FALSE, warning = FALSE, message = FALSE}
+landmapr::ggplot_sf(color = c(laramieNL$color, laramieRamadda$color)) + 
+  ggspatial::annotation_map_tile(type = "osm", zoomin = -1) +
+  landmapr::ggplot_layer_sf(laramie1851) +
+  landmapr::ggplot_layer_name(laramie1851) +
+  landmapr::ggplot_layer_sf(ramadda_1851) +
+  landmapr::ggplot_layer_name(ramadda_1851) +
+  ggplot2::ggtitle("Ramadda Fort Laramie 1851")
 ```
 
 ## Other Cessions from `native-land.ca`
@@ -132,7 +204,7 @@ knitr::knit_exit()
 ## Looking at SD Tribes
 
 ```{r}
-census_sf <- readRDS("data/census_geometry.rds")
+census_sf <- readRDS(file.path(datadir, "census_geometry.rds"))
 ```
 
 ```{r}

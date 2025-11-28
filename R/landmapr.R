@@ -47,7 +47,7 @@ landmaprInput <- function(id) {
   shiny::tagList(
     censusInput(ns("census")),
     nativeLandInput(ns("nativeLand")),
-    shiny::radioButtons(ns("dynamic"), "", c("Dynamic", "Static"),
+    shiny::radioButtons(ns("dynamic"), "", c("Static", "Dynamic"),
                         inline = TRUE),
     shiny::sliderInput(ns("height"), "Height:", 300, 800, 500, 100),
     shiny::uiOutput(ns("geo"))

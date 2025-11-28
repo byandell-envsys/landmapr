@@ -14,6 +14,10 @@ landTmapServer <- function(id, mainpar, places = shiny::reactive(NULL)) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
+    # Toggle on TMAP View.
+    # See <https://r-graph-gallery.com/package/tmap.html>.
+    tmap::tmap_mode("view")
+    
     valid_places <- shiny::reactive({
       if(shiny::isTruthy(places()) && nrow(places())) {
         sf::st_make_valid(places())

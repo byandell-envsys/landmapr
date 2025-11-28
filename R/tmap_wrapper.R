@@ -24,7 +24,7 @@ tmap_segment <- function(object, name) {
   # Cast multipolygons as multilinestring to give them `color`
   borders <- sf::st_cast(object, "MULTILINESTRING")
   tmap::tm_shape(object, paste(name, "ID")) +
-    tmap::tm_fill(alpha = 0) +
+    tmap::tm_fill(fill_alpha = 0) +
     tmap::tm_shape(borders, name) +
     tmap::tm_lines(col = "color", lwd = 2)
 }
