@@ -98,7 +98,7 @@ landmapr::ggplot_sf(color = oceti_sakowin$color) +
 
 Add base map from OpenStreetMap
 
-```{r}
+```{r message=FALSE}
 landmapr::ggplot_sf(color = oceti_sakowin$color) + 
   ggspatial::annotation_map_tile(type = "osm", zoomin = -1) +
   landmapr::ggplot_layer_sf(oceti_sakowin) +
@@ -107,7 +107,9 @@ landmapr::ggplot_sf(color = oceti_sakowin$color) +
 
 ```
 
-```{r}
+Add facet for `category`. Note `territories` above map.
+
+```{r message=FALSE}
 landmapr::ggplot_sf(color = oceti_sakowin$color) + 
   ggspatial::annotation_map_tile(type = "osm", zoomin = -1) +
   landmapr::ggplot_layer_sf(oceti_sakowin) +
@@ -123,7 +125,7 @@ menominee <- dplyr::filter(nativeLandData,
                            grepl("menominee", Slug))
 ```
 
-```{r warning=FALSE}
+```{r message=FALSE}
 landmapr::ggplot_sf(color = menominee$color) + 
   ggspatial::annotation_map_tile(type = "osm", zoomin = -1) +
   landmapr::ggplot_layer_sf(menominee) +
@@ -140,7 +142,7 @@ or use a lookup data frame such as `nativeLandSlug`.
 landmapr::get_nativeLand("territories", "oceti", nativeLandKey)
 ```
 
-```{r warning = FALSE}
+```{r message = FALSE, warning = FALSE}
 landmapr::ggplot_sf(color = "blue") + 
   ggspatial::annotation_map_tile(type = "osm", zoomin = -1) +
   landmapr::ggplot_layer_sf(
@@ -149,7 +151,7 @@ landmapr::ggplot_sf(color = "blue") +
   ggplot2::ggtitle("Oceti Sakowin")
 ```
 
-```{r warning = FALSE}
+```{r message = FALSE, warning = FALSE}
 landmapr::ggplot_sf(color = "blue") + 
   ggspatial::annotation_map_tile(type = "osm", zoomin = -1) +
   landmapr::ggplot_layer_sf(
@@ -165,8 +167,8 @@ census_geometry <- readRDS("data/census_geometry.rds")
 ```
 
 ```{r}
-ggplot_sf(color = unique(nativeLandUS$color)) + 
-  ggplot_layer_sf(dplyr::filter(nativeLandUS, category == "territories"))
+landmapr::ggplot_sf(color = unique(nativeLandUS$color)) + 
+  landmapr::ggplot_layer_sf(dplyr::filter(nativeLandUS, category == "territories"))
 ```
 
 ```{r}
@@ -189,7 +191,7 @@ bbox_mnwimi_sf <- tibble::tibble(x = bbox_mnwimi[c("xmin","xmax")],
   sf::st_as_sfc()
 ```
 
-```{r}
+```{r message = FALSE}
 ggplot2::ggplot() +
   ggspatial::annotation_map_tile(type = "osm", zoomin = -1) +
   ggplot2::geom_sf(data = bbox_mnwimi_sf, fill = "transparent")
@@ -215,7 +217,7 @@ if(file.exists(filename <- "data/nl_bbox_mnwimi.rds")) {
 }
 ```
 
-```{r warning = FALSE}
+```{r warning = FALSE, message = FALSE}
 landmapr::ggplot_sf(color = c(nl_bbox_mnwimi$color, census_geometry$color)) + 
   ggspatial::annotation_map_tile(type = "osm", zoomin = -1) +
   landmapr::ggplot_layer_sf(nl_bbox_mnwimi) +
@@ -241,6 +243,7 @@ landmapr::ggplot_sf(color = c(nl_mnwimi$color, census_geometry$color)) +
                   Name %in% c("Wisconsin", "Minnesota", "Michigan"))) +
   ggplot2::facet_wrap(~ category)
 ```
+
 ```{r}
 sf::st_drop_geometry(nl_mnwimi) |>
   dplyr::select(Slug, color, Name) |>

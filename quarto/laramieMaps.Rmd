@@ -95,13 +95,6 @@ extra_1851 <- "?entryid=6e6a35ed-12e4-449b-a00b-e1f5e6dfd5c3"
 url_1851 <- paste0(file.path(sicangudata, geojson_1851), extra_1851)
 ```
 
-```{r}
-rvest::read_html("https://www.geeksforgeeks.org//data-structures-in-r-programming") |>
-  rvest::html_elements("p") |>
-  rvest::html_text() |>
-  print()
-```
-
 The following will not work because one cannot operate on pages in
 [sicangudata.org](https://sicangudata.org), specifically on
 <https://sicangudata.org/repository/a/1851_treaty_bounds>
@@ -119,7 +112,7 @@ But one can use the specific URL (with `entryID`) to get the contents.
 This requires knowing that ID, which means manually visiting the page
 or having a lookup table.
 
-```{r}
+```{r eval=FALSE}
 ramadda_1851 <- sf::st_read(url_1851) |>
     dplyr::mutate(color = "blue", Name = "1851") |>
   sf::st_make_valid()
@@ -153,17 +146,19 @@ landmapr::ggplot_cession(laramie1851, cessions_1851,
                          "Laramie 1851 & Cessions")
 ```
 
-```{r}
-landmapr::tmap_cession(laramie1851, cessions_1851)
-```
-
 ```{r warning = FALSE, message = FALSE}
 cessions_1851_expand <- landmapr::cession_expand(cessions_1851, nativeLandUS)
 landmapr::ggplot_cession(laramie1851, cessions_1851_expand, 
                          "Expanded Laramie 1851 & Cessions")
 ```
 
-```{r}
+Following is not working with TMAP
+
+```{r eval=FALSE}
+landmapr::tmap_cession(laramie1851, cessions_1851)
+```
+
+```{r eval=FALSE}
 landmapr::tmap_cession(laramie1851, cessions_1851_expand)
 ```
 
@@ -174,25 +169,29 @@ cessions_1868 <- landmapr:::cession_intersection(nativeLandUS, laramie1868)
 landmapr::ggplot_cession(laramie1868, cessions_1868, "Laramie 1868 & Cessions")
 ```
 
-```{r}
-landmapr::tmap_cession(laramie1868, cessions_1868)
-```
-
 ```{r warning = FALSE, message = FALSE}
 cessions_1868_expand <- landmapr::cession_expand(cessions_1868, nativeLandUS)
 landmapr::ggplot_cession(laramie1868, cessions_1868_expand, "Expanded Laramie 1868 & Cessions")
 ```
 
-```{r}
+```{r eval=FALSE}
+landmapr::tmap_cession(laramie1868, cessions_1868)
+```
+
+```{r eval=FALSE}
 landmapr::tmap_cession(laramie1868, cessions_1868_expand)
 ```
 
 ### Look only at Cession 701
 
 ```{r}
+census_sf <- readRDS(file.path(datadir, "census_geometry.rds"))
+```
+
+```{r message = FALSE}
 landmapr::ggplot_cession(
   dplyr::filter(cessions_1868_expand, Name == "701"),
-  dplyr::filter(census_geometry, 
+  dplyr::filter(census_sf, 
                 grepl("Rosebud", Name),
                 category == "aiannh"))
 ```
